@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Sistema de Facturacion{% endblock %}
+
+{% block head %}
+<style>
+    .hero-band {
+        display: grid;
+        gap: 18px;
+        align-items: end;
+        margin-bottom: 24px;
+        padding: clamp(22px, 4vw, 34px);
+        color: var(--white);
+        background:
+            linear-gradient(135deg, #1d4ed8 0%, #0f172a 72%),
+            var(--blue);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+    }
+
+    .hero-band h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        line-height: 1.04;
+    }
+
+    .hero-band p {
+        max-width: 720px;
+        margin: 10px 0 0;
+        color: #dbeafe;
+        line-height: 1.65;
+    }
+
+    .status-chip {
+        display: inline-flex;
+        width: fit-content;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        color: var(--white);
+        background: rgba(255, 255, 255, 0.12);
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    .status-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 99px;
+        background: #22c55e;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        display: block;
+        padding: 18px;
+        transition:
+            border-color 0.15s ease,
+            box-shadow 0.15s ease,
+            transform 0.15s ease;
+    }
+
+    .stat-card:hover,
+    .stat-card:focus-visible {
+        border-color: #93c5fd;
+        box-shadow:
+            0 18px 42px rgba(15, 23, 42, 0.12),
+            0 0 0 4px rgba(29, 78, 216, 0.15);
+        transform: translateY(-2px);
+        outline: none;
+    }
+
+    .stat-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 0 0 12px;
+        color: var(--gray-500);
+        font-size: 0.88rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .stat-icon {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 8px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-weight: 900;
+    }
+
+    .stat-card.alert .stat-icon {
+        color: var(--red);
+        background: var(--red-soft);
+    }
+
+    .stat-value {
+        margin: 0;
+        color: var(--gray-900);
+        font-size: 2rem;
+        font-weight: 900;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+    }
+
+    .panel {
+        overflow: hidden;
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .panel-header h2 {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .panel-tag {
+        padding: 6px 9px;
+        border-radius: 8px;
+        color: var(--blue);
+        background: var(--blue-soft);
+        font-size: 0.78rem;
+        font-weight: 900;
+    }
+
+    .list {
+        display: grid;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .list-item {
+        display: grid;
+        gap: 6px;
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .list-item:last-child {
+        border-bottom: 0;
+    }
+
+    .item-title {
+        margin: 0;
+        color: var(--gray-900);
+        font-weight: 900;
+    }
+
+    .item-meta {
+        margin: 0;
+        color: var(--gray-500);
+        font-size: 0.92rem;
+    }
+
+    .empty-state {
+        padding: 28px 18px;
+        color: var(--gray-500);
+        line-height: 1.6;
+    }
+
+    .danger-note {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-left: 5px solid var(--red);
+        color: #7f1d1d;
+        background: var(--red-soft);
+        border-radius: 8px;
+        font-weight: 700;
+    }
+
+    @media (min-width: 980px) {
+        .hero-band {
+            grid-template-columns: minmax(0, 1fr) auto;
+        }
+
+        .content-grid {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('dashboard') }}">
+            <span class="brand-mark">SF</span>
+            <span>
+                <span class="brand-title">Sistema de Facturacion</span>
+                <span class="brand-subtitle">Panel administrativo</span>
+            </span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navegacion principal">
+            {% for item in nav_items %}
+                {% if item.endpoint == 'dashboard' %}
+                    {% set href = url_for('dashboard') %}
+                    {% set is_active = active_page == 'dashboard' %}
+                {% else %}
+                    {% set href = url_for(item.endpoint, section=item.section) %}
+                    {% set is_active = active_page == item.section %}
+                {% endif %}
+                <a class="nav-button {% if is_active %}active{% endif %}" href="{{ href }}" {% if is_active %}aria-current="page"{% endif %}>
+                    {{ item.label }}
+                </a>
+            {% endfor %}
+        </nav>
+
+        <div class="topbar-actions">
+            <span class="user-pill">{{ user.name }} | {{ user.role }}</span>
+            <form method="post" action="{{ url_for('logout') }}">
+                <button class="button button-danger" type="submit">Salir</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="hero-band">
+            <div>
+                <h1>Hola, {{ user.name }}</h1>
+                <p>Resumen general del sistema, con tus datos principales listos para revisar.</p>
+            </div>
+            <span class="status-chip"><span class="status-dot"></span> Base de datos: {{ db_type }}</span>
+        </section>
+
+        <section class="stats-grid" aria-label="Estadisticas">
+            {% for label, total in totals.items() %}
+                {% set section_target = 'cotizaciones' if label == 'cotizaciones' else label %}
+                {% set href = url_for('section_page', section=section_target) if label != 'movimientos' else url_for('section_page', section='movimientos') %}
+                <a class="card stat-card {% if label in ['ventas', 'movimientos'] %}alert{% endif %}" href="{{ href }}">
+                    <p class="stat-label">
+                        {{ label }}
+                        <span class="stat-icon">{{ label[:1]|upper }}</span>
+                    </p>
+                    <p class="stat-value">{{ total }}</p>
+                </a>
+            {% endfor %}
+        </section>
+
+        <section class="content-grid">
+            <article class="card panel">
+                <div class="panel-header">
+                    <h2>Productos recientes</h2>
+                    <span class="panel-tag">Inventario</span>
+                </div>
+                {% if recent_products %}
+                    <ul class="list">
+                        {% for product in recent_products %}
+                            <li class="list-item">
+                                <p class="item-title">{{ product.name }}</p>
+                                <p class="item-meta">Codigo {{ product.code }} | Stock {{ product.stock }} | RD$ {{ product.sale_price }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="empty-state">Aun no hay productos registrados.</div>
+                {% endif %}
+            </article>
+
+            <article class="card panel">
+                <div class="panel-header">
+                    <h2>Clientes recientes</h2>
+                    <span class="panel-tag">CRM</span>
+                </div>
+                {% if recent_customers %}
+                    <ul class="list">
+                        {% for customer in recent_customers %}
+                            <li class="list-item">
+                                <p class="item-title">{{ customer.name }}</p>
+                                <p class="item-meta">{{ customer.email or 'Sin email' }} | {{ customer.phone or 'Sin telefono' }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="empty-state">Aun no hay clientes registrados.</div>
+                {% endif %}
+            </article>
+        </section>
+
+        <p class="danger-note">Los botones rojos se reservan para acciones sensibles, como cerrar sesion o eliminar datos.</p>
+    </main>
+</div>
+{% endblock %}

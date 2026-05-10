@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | Sistema de Facturacion{% endblock %}
+
+{% block head %}
+<style>
+    .form-hero {
+        margin-bottom: 22px;
+        padding: clamp(22px, 4vw, 34px);
+        color: var(--white);
+        background:
+            linear-gradient(135deg, #1d4ed8 0%, #334155 70%),
+            var(--blue);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+    }
+
+    .form-hero h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+        line-height: 1.05;
+    }
+
+    .form-hero p {
+        max-width: 720px;
+        margin: 10px 0 0;
+        color: #dbeafe;
+        line-height: 1.65;
+    }
+
+    .form-card {
+        max-width: 860px;
+        padding: 22px;
+    }
+
+    .form-grid {
+        display: grid;
+        gap: 16px;
+    }
+
+    .field {
+        display: grid;
+        gap: 7px;
+    }
+
+    .field label {
+        color: var(--gray-700);
+        font-size: 0.88rem;
+        font-weight: 900;
+    }
+
+    .field input,
+    .field textarea {
+        width: 100%;
+        min-height: 48px;
+        padding: 0 14px;
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        color: var(--gray-900);
+        background: var(--gray-50);
+        outline: none;
+    }
+
+    .field textarea {
+        min-height: 110px;
+        padding-top: 12px;
+        resize: vertical;
+    }
+
+    .field input:hover,
+    .field textarea:hover,
+    .field input:focus,
+    .field textarea:focus {
+        border-color: #93c5fd;
+        box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.14);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .button-secondary {
+        color: var(--blue);
+        background: var(--blue-soft);
+    }
+
+    .button-secondary:hover,
+    .button-secondary:focus-visible {
+        color: var(--white);
+        background: var(--blue);
+    }
+
+    @media (min-width: 760px) {
+        .form-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .field-wide {
+            grid-column: 1 / -1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="{{ url_for('dashboard') }}">
+            <span class="brand-mark">SF</span>
+            <span>
+                <span class="brand-title">Sistema de Facturacion</span>
+                <span class="brand-subtitle">Panel administrativo</span>
+            </span>
+        </a>
+
+        <nav class="main-nav" aria-label="Navegacion principal">
+            {% for item in nav_items %}
+                {% if item.endpoint == 'dashboard' %}
+                    {% set href = url_for('dashboard') %}
+                    {% set is_active = active_page == 'dashboard' %}
+                {% else %}
+                    {% set href = url_for(item.endpoint, section=item.section) %}
+                    {% set is_active = active_page == item.section %}
+                {% endif %}
+                <a class="nav-button {% if is_active %}active{% endif %}" href="{{ href }}" {% if is_active %}aria-current="page"{% endif %}>
+                    {{ item.label }}
+                </a>
+            {% endfor %}
+        </nav>
+
+        <div class="topbar-actions">
+            <span class="user-pill">{{ user.name }} | {{ user.role }}</span>
+            <form method="post" action="{{ url_for('logout') }}">
+                <button class="button button-danger" type="submit">Salir</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="form-hero">
+            <h1>{{ title }}</h1>
+            <p>{{ subtitle }}</p>
+        </section>
+
+        <form class="card form-card" method="post">
+            <div class="form-grid">
+                {% for field in fields %}
+                    <div class="field {% if field.type == 'textarea' %}field-wide{% endif %}">
+                        <label for="{{ field.name }}">{{ field.label }}</label>
+                        {% if field.type == 'textarea' %}
+                            <textarea id="{{ field.name }}" name="{{ field.name }}" {% if field.required %}required{% endif %}></textarea>
+                        {% else %}
+                            <input id="{{ field.name }}" name="{{ field.name }}" type="{{ field.type }}" {% if field.step %}step="{{ field.step }}"{% endif %} {% if field.required %}required{% endif %}>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <button class="button button-primary" type="submit">Guardar</button>
+                <a class="button button-secondary" href="{{ back_url }}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+</div>
+{% endblock %}

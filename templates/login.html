@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Sistema de Facturacion{% endblock %}
+
+{% block head %}
+<style>
+    body {
+        background:
+            linear-gradient(135deg, rgba(29, 78, 216, 0.92), rgba(15, 23, 42, 0.94)),
+            radial-gradient(circle at top left, rgba(220, 38, 38, 0.28), transparent 34%),
+            var(--gray-100);
+    }
+
+    .login-page {
+        display: grid;
+        min-height: 100vh;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .login-hero {
+        display: none;
+        padding: 56px;
+        color: var(--white);
+    }
+
+    .login-hero h1 {
+        max-width: 560px;
+        margin: 0;
+        font-size: clamp(2.2rem, 5vw, 4.7rem);
+        line-height: 0.98;
+    }
+
+    .login-hero p {
+        max-width: 560px;
+        margin: 22px 0 0;
+        color: #dbeafe;
+        font-size: 1.05rem;
+        line-height: 1.7;
+    }
+
+    .login-panel-wrap {
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        min-height: 100vh;
+        padding: 24px;
+    }
+
+    .login-panel {
+        width: min(100%, 430px);
+        padding: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.38);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: var(--shadow);
+    }
+
+    .login-logo {
+        display: grid;
+        width: 52px;
+        height: 52px;
+        place-items: center;
+        color: var(--white);
+        background: var(--blue);
+        border-radius: 8px;
+        font-size: 1.2rem;
+        font-weight: 900;
+    }
+
+    .login-panel h2 {
+        margin: 22px 0 8px;
+        font-size: 1.75rem;
+    }
+
+    .login-panel p {
+        margin: 0;
+        color: var(--gray-500);
+        line-height: 1.55;
+    }
+
+    .login-form {
+        display: grid;
+        gap: 16px;
+        margin-top: 28px;
+    }
+
+    .field {
+        display: grid;
+        gap: 7px;
+    }
+
+    .field label {
+        color: var(--gray-700);
+        font-size: 0.88rem;
+        font-weight: 800;
+    }
+
+    .field input {
+        width: 100%;
+        min-height: 48px;
+        padding: 0 14px;
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        color: var(--gray-900);
+        background: var(--gray-50);
+        outline: none;
+    }
+
+    .field input:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 4px var(--blue-soft);
+    }
+
+    .alert {
+        padding: 12px 14px;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        color: #991b1b;
+        background: var(--red-soft);
+        font-weight: 700;
+    }
+
+    .helper {
+        margin-top: 18px;
+        padding-top: 18px;
+        border-top: 1px solid var(--gray-200);
+        color: var(--gray-500);
+        font-size: 0.9rem;
+    }
+
+    @media (min-width: 900px) {
+        .login-page {
+            grid-template-columns: minmax(0, 1.1fr) minmax(430px, 0.75fr);
+        }
+
+        .login-hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<main class="login-page">
+    <section class="login-hero" aria-label="Presentacion">
+        <h1>Sistema de Facturacion</h1>
+        <p>Controla clientes, productos, servicios, cotizaciones y ventas desde un panel limpio, rapido y listo para crecer.</p>
+    </section>
+
+    <section class="login-panel-wrap" aria-label="Inicio de sesion">
+        <div class="login-panel">
+            <div class="login-logo">SF</div>
+            <h2>Iniciar sesion</h2>
+            <p>Accede con tu usuario administrador para entrar al panel.</p>
+
+            <form class="login-form" method="post" action="{{ url_for('login') }}">
+                {% if error %}
+                    <div class="alert">{{ error }}</div>
+                {% endif %}
+
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" value="{{ email or '' }}" placeholder="admin@facturacion.com" required autofocus>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" placeholder="admin123" required>
+                </div>
+
+                <button class="button button-primary" type="submit">Entrar</button>
+            </form>
+
+            <p class="helper">Usuario de prueba: admin@facturacion.com / admin123</p>
+        </div>
+    </section>
+</main>
+{% endblock %}
