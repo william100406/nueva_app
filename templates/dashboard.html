@@ -205,37 +205,7 @@
 
 {% block body %}
 <div class="app-shell">
-    <header class="topbar">
-        <a class="brand" href="{{ url_for('dashboard') }}">
-            <span class="brand-mark">SF</span>
-            <span>
-                <span class="brand-title">Sistema de Facturacion</span>
-                <span class="brand-subtitle">Panel administrativo</span>
-            </span>
-        </a>
-
-        <nav class="main-nav" aria-label="Navegacion principal">
-            {% for item in nav_items %}
-                {% if item.endpoint == 'dashboard' %}
-                    {% set href = url_for('dashboard') %}
-                    {% set is_active = active_page == 'dashboard' %}
-                {% else %}
-                    {% set href = url_for(item.endpoint, section=item.section) %}
-                    {% set is_active = active_page == item.section %}
-                {% endif %}
-                <a class="nav-button {% if is_active %}active{% endif %}" href="{{ href }}" {% if is_active %}aria-current="page"{% endif %}>
-                    {{ item.label }}
-                </a>
-            {% endfor %}
-        </nav>
-
-        <div class="topbar-actions">
-            <span class="user-pill">{{ user.name }} | {{ user.role }}</span>
-            <form method="post" action="{{ url_for('logout') }}">
-                <button class="button button-danger" type="submit">Salir</button>
-            </form>
-        </div>
-    </header>
+    {% include "_topbar.html" %}
 
     <main class="page">
         <section class="hero-band">

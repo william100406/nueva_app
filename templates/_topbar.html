@@ -1,0 +1,54 @@
+<header class="topbar">
+    <div class="topbar-left">
+        <a class="brand" href="{{ url_for('dashboard') }}">
+            <span class="brand-mark">SF</span>
+            <span>
+                <span class="brand-title">Sistema de Facturacion</span>
+                <span class="brand-subtitle">Panel administrativo</span>
+            </span>
+        </a>
+
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Cambiar tema">
+            <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+            <span>Tema</span>
+        </button>
+    </div>
+
+    <nav class="main-nav" aria-label="Navegacion principal">
+        {% for item in nav_items %}
+            {% if item.endpoint == 'dashboard' %}
+                {% set href = url_for('dashboard') %}
+                {% set is_active = active_page == 'dashboard' %}
+            {% else %}
+                {% set href = url_for(item.endpoint, section=item.section) %}
+                {% set is_active = active_page == item.section %}
+            {% endif %}
+            <a class="nav-button {% if is_active %}active{% endif %}" href="{{ href }}" {% if is_active %}aria-current="page"{% endif %}>
+                {{ item.label }}
+            </a>
+        {% endfor %}
+    </nav>
+
+    <div class="topbar-actions">
+        <details class="profile-menu">
+            <summary class="profile-button" aria-label="Abrir perfil">
+                <span class="profile-avatar">{{ user.name[:1]|upper }}</span>
+                <span class="profile-name">{{ user.name }}</span>
+            </summary>
+            <div class="profile-panel">
+                <div class="profile-heading">
+                    <span class="profile-avatar profile-avatar-large">{{ user.name[:1]|upper }}</span>
+                    <span>
+                        <strong>{{ user.name }}</strong>
+                        <small>{{ user.email }}</small>
+                    </span>
+                </div>
+                <a class="profile-link" href="{{ url_for('section_page', section='usuarios') }}">Perfil</a>
+                <a class="profile-link" href="{{ url_for('section_page', section='usuarios') }}">Configuracion</a>
+                <form method="post" action="{{ url_for('logout') }}">
+                    <button class="profile-link profile-link-button" type="submit">Cambiar de cuenta</button>
+                </form>
+            </div>
+        </details>
+    </div>
+</header>

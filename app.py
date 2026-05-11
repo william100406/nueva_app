@@ -123,7 +123,7 @@ def get_nav_items():
         {"label": "Cotizaciones", "endpoint": "section_page", "section": "cotizaciones"},
         {"label": "Ventas", "endpoint": "section_page", "section": "ventas"},
         {"label": "Movimientos", "endpoint": "section_page", "section": "movimientos"},
-        {"label": "Usuarios", "endpoint": "section_page", "section": "usuarios"}
+        {"label": "Perfil", "endpoint": "section_page", "section": "usuarios"}
     ]
 
 
@@ -250,8 +250,8 @@ def get_section_data(section):
             ]
         },
         "usuarios": {
-            "title": "Usuarios",
-            "subtitle": "Administradores y accesos del sistema.",
+            "title": "Perfil",
+            "subtitle": "Informacion de acceso y configuracion de cuenta.",
             "tag": "Seguridad",
             "columns": ["Nombre", "Email", "Rol", "Estado"],
             "rows": [
