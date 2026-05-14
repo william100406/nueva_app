@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from datetime import datetime
 from decimal import Decimal
 from functools import wraps
@@ -17,7 +18,12 @@ from dotenv import load_dotenv
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
-load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent
+
+if __name__ == "__main__":
+    os.chdir(BASE_DIR)
+
+load_dotenv(BASE_DIR / ".env")
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv(
@@ -26,7 +32,10 @@ app.config["SECRET_KEY"] = os.getenv(
 )
 
 
-database_url = os.getenv("DATABASE_URL")
+if __name__ == "__main__":
+    database_url = "sqlite:///facturacion.db"
+else:
+    database_url = os.getenv("DATABASE_URL")
 
 if database_url:
     # Compatibilidad con URLs antiguas
